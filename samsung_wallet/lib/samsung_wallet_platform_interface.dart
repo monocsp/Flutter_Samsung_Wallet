@@ -23,7 +23,6 @@ abstract class SamsungWalletPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
+  Future<bool?> checkSamsungWalletSupported(
+      {String? countryCode, required String parterCode});
 }

@@ -1,4 +1,4 @@
-package com.example.samsung_wallet_example;
+package com.monocsp.samsung_wallet_example;
 
 import io.flutter.embedding.android.FlutterActivity;
 

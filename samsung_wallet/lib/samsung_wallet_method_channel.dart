@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -7,11 +9,17 @@ import 'samsung_wallet_platform_interface.dart';
 class MethodChannelSamsungWallet extends SamsungWalletPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('samsung_wallet');
+  final methodChannel = const MethodChannel('flutter_samsung_wallet');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<bool?> checkSamsungWalletSupported(
+      {String? countryCode, required String parterCode}) async {
+    final result = await methodChannel.invokeMethod('checkWallet', {
+      'countryCode': countryCode,
+      'partnerCode': parterCode,
+      'serviceType': 'WALLET'
+    });
+    log("[SAMSUNG WALLET SAMPLE] : Samsung Wallet supported? ${result ? "YES!" : "NO!"}");
+    return result;
   }
 }

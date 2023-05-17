@@ -1,4 +1,4 @@
-group 'com.example.samsung_wallet'
+group 'com.monocsp.samsung_wallet'
 version '1.0'
 
 buildscript {
