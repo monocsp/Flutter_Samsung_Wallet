@@ -29,7 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
-
+import java.net.MalformedURLException;
 import android.net.Uri;
 //For Excutor
 import java.util.concurrent.ExecutorService;
@@ -160,6 +160,23 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
 
     }
 
+    private void addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) throws MalformedURLException{
+        URL click_url = null;
+        try {
+            click_url = new URL(clickUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        try {
+            HttpsURLConnection myConnection =
+                    (HttpsURLConnection) click_url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Intent urlintent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://a.swallet.link/atw/v1/"+cardId+"#Clip?cdata="+cData));
+        startActivity(urlintent);
+    }
+
 
     ///Samsung Wallet Sample Code
     public boolean checkWalletSupported(@NonNull String modelName, @Nullable String countryCode,
@@ -177,6 +194,7 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
         //     Log.e(TAG, "partnerCode is mandatory parameter");
         //     throw new Exception("something went wrong (failed to get device partnerCode)");
         // }
+        //Dead Code
 
         String urlString = makeUrl(modelName, countryCode, serviceType);
         Log.i(TAG, "urlString: " + urlString);
