@@ -25,4 +25,9 @@ abstract class SamsungWalletPlatform extends PlatformInterface {
 
   Future<bool?> checkSamsungWalletSupported(
       {String? countryCode, required String parterCode});
+
+  Future<bool?> addCardToSamsungWallet(
+      {required String cardID,
+      required String cData,
+      required String clickURL});
 }

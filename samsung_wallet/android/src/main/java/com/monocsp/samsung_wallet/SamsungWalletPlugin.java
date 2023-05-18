@@ -16,10 +16,17 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+import android.app.Activity;
+
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.PluginRegistry;
+
 import androidx.annotation.Nullable;
 
 //For Samsung Wallet Import
 import android.os.Build;
+import android.content.Intent;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -29,7 +36,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
+
 import java.net.MalformedURLException;
+
 import android.net.Uri;
 //For Excutor
 import java.util.concurrent.ExecutorService;
@@ -40,7 +49,7 @@ import java.util.concurrent.Executors;
 /**
  * SamsungWalletPlugin
  */
-public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
+public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegistry.ActivityResultListener {
     protected final static String TAG = "SamsungWalletSample";
     protected final static String ERROR_TAG = "[SAMSUNG WALLET ERROR]";
     protected static final String HOST = "https://api-us3.mpay.samsung.com";
@@ -51,11 +60,29 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
+    private Activity activity;
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        // TODO: your plugin is now attached to an Activity
+        activity = activityPluginBinding.getActivity();
+        activityPluginBinding.addActivityResultListener(this);
+
+    }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_samsung_wallet");
         channel.setMethodCallHandler(this);
+    }
+
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+        // TODO: your plugin is now attached to a new Activity
+        // after a configuration change.
+        activity = activityPluginBinding.getActivity();
+        activityPluginBinding.addActivityResultListener(this);
     }
 
     @Override
@@ -65,15 +92,13 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
             try {
                 final String modelName = Build.MODEL;
                 final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
-
                 final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
+                final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
 
                 if (serviceType == null || serviceType.isEmpty()) {
                     result.error(TAG, ERROR_TAG, " : serviceType is mandatory parameter!");
                     return;
                 }
-
-                final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
 
                 if (partnerCode == null || partnerCode.isEmpty()) {
                     result.error(TAG, ERROR_TAG, " : partnerCode is mandatory parameter!");
@@ -88,9 +113,39 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
                 return;
             }
             return;
-        } else {
-            result.notImplemented();
         }
+
+        if (call.method.equals("addCardToSamsungWallet")) {
+            final String cData = call.argument("cData");
+            final String cardId = call.argument("cardId");
+            final String clickURL = call.argument("clickURL");
+
+            if (cData == null || cData.isEmpty()) {
+                result.error(TAG, ERROR_TAG, " : cData is mandatory parameter!");
+                return;
+            }
+
+
+            if (cardId == null || cardId.isEmpty()) {
+                result.error(TAG, ERROR_TAG, " : cardId is mandatory parameter!");
+                return;
+            }
+
+
+            if (clickURL == null || clickURL.isEmpty()) {
+                result.error(TAG, ERROR_TAG, " : clickURL is mandatory parameter!");
+                return;
+            }
+
+            boolean isSuccessAddCard = addCardToSamsungWallet(clickURL, cardId, cData);
+
+            result.success(isSuccessAddCard);
+            return;
+        }
+
+
+        result.notImplemented();
+        return;
 
 
     }
@@ -98,6 +153,52 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
+        activity = null;
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        activity = null;
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        activity = null;
+
+    }
+
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        return false;
+    }
+
+
+    private boolean addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) throws MalformedURLException,IOException,Exception {
+        URL click_url = null;
+        try {
+            click_url = new URL(clickUrl);
+        } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
+        try {
+            HttpsURLConnection myConnection =
+                    (HttpsURLConnection) click_url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
+        try {
+            Intent urlintent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://a.swallet.link/atw/v1/" + cardId + "#Clip?cdata=" + cData));
+            activity.startActivity(urlintent);
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
+
     }
 
     ///Check WalletSupported async task
@@ -158,23 +259,6 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler {
             e.printStackTrace();
         }
 
-    }
-
-    private void addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) throws MalformedURLException{
-        URL click_url = null;
-        try {
-            click_url = new URL(clickUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
-            HttpsURLConnection myConnection =
-                    (HttpsURLConnection) click_url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Intent urlintent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://a.swallet.link/atw/v1/"+cardId+"#Clip?cdata="+cData));
-        startActivity(urlintent);
     }
 
 

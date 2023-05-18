@@ -11,8 +11,26 @@ class SamsungWallet {
   /// [serviceType] is mandatory, fixed. Someday it can be change
 
   Future<bool?> checkSamsungWalletSupported(
-      {String? countryCode, required String parterCode}) {
-    return SamsungWalletPlatform.instance.checkSamsungWalletSupported(
-        parterCode: parterCode, countryCode: countryCode);
-  }
+          {String? countryCode, required String parterCode}) async =>
+      await SamsungWalletPlatform.instance.checkSamsungWalletSupported(
+          parterCode: parterCode, countryCode: countryCode);
+
+  /// Add Card the provided cdata and cardid in Samsung Wallet
+  ///
+  /// mandatory paramter [cardId]
+  /// Please Check CardId which you want to add card
+  ///
+  /// mandatory paratmer [clickURL].
+  /// Please Check CardId which you want to add card
+  ///
+  /// mandatory paratmer [cData]
+  /// You can get cdata from CData Generator
+  /// which is you can find samsung wallet official documentation
+
+  Future<bool?> addCardToSamsungWallet(
+          {required String cardID,
+          required String cData,
+          required String clickURL}) async =>
+      await SamsungWalletPlatform.instance.addCardToSamsungWallet(
+          cardID: cardID, cData: cData, clickURL: clickURL);
 }
