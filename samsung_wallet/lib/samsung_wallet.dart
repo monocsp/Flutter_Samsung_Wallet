@@ -1,6 +1,22 @@
 import 'samsung_wallet_platform_interface.dart';
 
 class SamsungWallet {
+  final String? countryCode;
+  final String serviceType;
+  final String parterCode;
+  final String impressionURL;
+
+  SamsungWallet(
+      {this.countryCode,
+      required this.impressionURL,
+      required this.parterCode,
+      required this.serviceType}) {
+    SamsungWalletPlatform.instance.initialized(
+        parterCode: parterCode,
+        impressionURL: impressionURL,
+        countryCode: countryCode);
+  }
+
   /// Check current device samsung wallet supported
   ///
   /// optional paramter [countryCode] country code following (ISO_3166-2)

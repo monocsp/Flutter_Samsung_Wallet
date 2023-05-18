@@ -30,4 +30,9 @@ abstract class SamsungWalletPlatform extends PlatformInterface {
       {required String cardID,
       required String cData,
       required String clickURL});
+
+  Future<void> initialized(
+      {String? countryCode,
+      required String parterCode,
+      required String impressionURL});
 }

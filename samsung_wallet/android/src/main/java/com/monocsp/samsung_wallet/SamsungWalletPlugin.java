@@ -88,13 +88,53 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 
-        if (call.method.equals("checkWallet")) {
-            try {
+
+        if(call.method.equals("initialized")){
                 final String modelName = Build.MODEL;
                 final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
                 final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
                 final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
+                final String impressionURL = call.argument("impressionURL");
+                Map<String, Object> response = new HashMap<>();
+                    
+                    
+            try{
+                if (serviceType == null || serviceType.isEmpty()) {
+                    result.error(TAG, ERROR_TAG, " : serviceType is mandatory parameter!");
+                    return;
+                }
 
+                if (partnerCode == null || partnerCode.isEmpty()) {
+                    result.error(TAG, ERROR_TAG, " : partnerCode is mandatory parameter!");
+                    return;
+                }
+                boolean isWalletSupported = checkWalletAsyncTask(
+                        modelName, countryCode, serviceType, partnerCode);
+                        response.put("walletSupported", isWalletSupported);                
+                        
+            }catch(Exception e){
+                result.error(TAG, ERROR_TAG, e.getMessage());
+                return;
+            }
+
+            try{
+                boolean isConnectedImpressionUrl = openConnectionImpressionUrl(impressionURL);
+                response.put("connectedImpressionUrl", isConnectedImpressionUrl);
+            }catch(IOException e){
+                result.error(TAG, ERROR_TAG, e.getMessage());
+                return;
+            }
+            result.success(isConnectedImpressionUrl);
+            return;
+        }
+
+        if (call.method.equals("checkWallet")) {
+            final String modelName = Build.MODEL;
+                final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
+                final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
+                final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
+            try {
+                
                 if (serviceType == null || serviceType.isEmpty()) {
                     result.error(TAG, ERROR_TAG, " : serviceType is mandatory parameter!");
                     return;
@@ -174,6 +214,8 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
     }
 
 
+
+
     private boolean addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) throws MalformedURLException,IOException,Exception {
         URL click_url = null;
         try {
@@ -245,27 +287,32 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
         return result;
     }
 
-    private void openConnectionImpressionUrl(@NonNull String impressionUrl) throws IOException {
+    private boolean openConnectionImpressionUrl(@NonNull String impressionUrl) throws IOException {
         URL impression_url = null;
         try {
             impression_url = new URL(impressionUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+            return false;
         }
         try {
             HttpsURLConnection myConnection =
                     (HttpsURLConnection) impression_url.openConnection();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+            return false;
         }
 
     }
 
 
-    ///Samsung Wallet Sample Code
+    /// Samsung Wallet Sample Code
     public boolean checkWalletSupported(@NonNull String modelName, @Nullable String countryCode,
                                         @NonNull String serviceType, @NonNull String partnerCode) throws Exception {
-        //Dead Code
+        // Dead Code
         // if (modelName == null || modelName.isEmpty()) {
         //     Log.e(TAG, "model name is mandatory parameter");
         //     throw new Exception("something went wrong (failed to get device model name)");
@@ -278,7 +325,7 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
         //     Log.e(TAG, "partnerCode is mandatory parameter");
         //     throw new Exception("something went wrong (failed to get device partnerCode)");
         // }
-        //Dead Code
+        // Dead Code
 
         String urlString = makeUrl(modelName, countryCode, serviceType);
         Log.i(TAG, "urlString: " + urlString);

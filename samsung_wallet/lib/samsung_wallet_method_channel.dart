@@ -30,10 +30,29 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
       {required String cardID,
       required String cData,
       required String clickURL}) async {
-    final result = await methodChannel.invokeMethod(
-        'addCardToSamsungWallet',
-        {"cardId": cardID, "cData": cData, "clickURL": clickURL});
+    final result = await methodChannel.invokeMethod('addCardToSamsungWallet',
+            {"cardId": cardID, "cData": cData, "clickURL": clickURL}) ??
+        false;
     log("$_TAG : DONE? ${result ? "YES!" : "NO!"}");
     return result;
+  }
+
+  @override
+  Future<void> initialized(
+      {String? countryCode,
+      required String parterCode,
+      required String impressionURL}) async {
+    final Map<String, dynamic> result =
+        (await methodChannel.invokeMapMethod('initialized', {
+              'countryCode': countryCode,
+              'partnerCode': parterCode,
+              'serviceType': 'WALLET',
+              'impressionURL': impressionURL
+            }) as Map<String, dynamic>?) ??
+            {};
+
+    log("$_TAG : Samsung Wallet supported? ${(result["walletSupported"] ?? false) ? "YES!" : "NO!"}");
+    log("$_TAG : ${(result["connectedImpressionUrl"] ?? false) ? "Success to connection" : "Fail to connection"} ImpressUrl");
+    return;
   }
 }
