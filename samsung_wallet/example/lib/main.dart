@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:samsung_wallet/samsung_wallet.dart';
 
 void main() {
@@ -19,12 +17,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool test = false;
-  final _samsungWalletPlugin = SamsungWallet();
+  final _samsungWalletPlugin = SamsungWallet(
+      countryCode: "KR",
+      parterCode: "4052995287435138240",
+      impressionURL:
+          "https://us-rd.mcsvc.samsung.com/statistics/impression/addtowlt?ep=C50C3754FEB24833B30C10B275BB6AB8;cc=GC;ii=1287098641030840334;co=4052995287435138240;cp=1288017491089625089;si=24;pg=101212967375212546;pi=Aqz68EBXSx6Mv9jsaZxzaA;tp=4053008150902138496;li=0");
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    // initPlatformState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

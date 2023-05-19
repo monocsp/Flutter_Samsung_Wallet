@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -15,11 +16,13 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
 
   @override
   Future<bool?> checkSamsungWalletSupported(
-      {String? countryCode, required String parterCode}) async {
+      {String? countryCode,
+      required String parterCode,
+      required String serviceType}) async {
     final result = await methodChannel.invokeMethod('checkWallet', {
       'countryCode': countryCode,
       'partnerCode': parterCode,
-      'serviceType': 'WALLET'
+      'serviceType': serviceType
     });
     log("$_TAG : Samsung Wallet supported? ${result ? "YES!" : "NO!"}");
     return result;
@@ -33,7 +36,7 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
     final result = await methodChannel.invokeMethod('addCardToSamsungWallet',
             {"cardId": cardID, "cData": cData, "clickURL": clickURL}) ??
         false;
-    log("$_TAG : DONE? ${result ? "YES!" : "NO!"}");
+    log("$_TAG : Open Samsung Wallet ${result ? "Success" : "Fail"}");
     return result;
   }
 
@@ -41,15 +44,15 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
   Future<void> initialized(
       {String? countryCode,
       required String parterCode,
+      required String serviceType,
       required String impressionURL}) async {
-    final Map<String, dynamic> result =
-        (await methodChannel.invokeMapMethod('initialized', {
-              'countryCode': countryCode,
-              'partnerCode': parterCode,
-              'serviceType': 'WALLET',
-              'impressionURL': impressionURL
-            }) as Map<String, dynamic>?) ??
-            {};
+    Map result = (await methodChannel.invokeMapMethod('initialized', {
+          'countryCode': countryCode,
+          'partnerCode': parterCode,
+          'serviceType': serviceType,
+          'impressionURL': impressionURL
+        })) ??
+        {"walletSupported": false, "connectedImpressionUrl": false};
 
     log("$_TAG : Samsung Wallet supported? ${(result["walletSupported"] ?? false) ? "YES!" : "NO!"}");
     log("$_TAG : ${(result["connectedImpressionUrl"] ?? false) ? "Success to connection" : "Fail to connection"} ImpressUrl");

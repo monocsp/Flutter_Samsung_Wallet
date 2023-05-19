@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
-
+import java.util.HashMap;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -95,8 +95,8 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
                 final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
                 final String impressionURL = call.argument("impressionURL");
-                Map<String, Object> response = new HashMap<>();
-                    
+                HashMap<String, Object> response = new HashMap<>();
+
                     
             try{
                 if (serviceType == null || serviceType.isEmpty()) {
@@ -124,7 +124,7 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 result.error(TAG, ERROR_TAG, e.getMessage());
                 return;
             }
-            result.success(isConnectedImpressionUrl);
+            result.success(response);
             return;
         }
 
@@ -216,7 +216,7 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
 
 
 
-    private boolean addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) throws MalformedURLException,IOException,Exception {
+    private boolean addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) {
         URL click_url = null;
         try {
             click_url = new URL(clickUrl);

@@ -24,7 +24,9 @@ abstract class SamsungWalletPlatform extends PlatformInterface {
   }
 
   Future<bool?> checkSamsungWalletSupported(
-      {String? countryCode, required String parterCode});
+      {String? countryCode,
+      required String parterCode,
+      required String serviceType});
 
   Future<bool?> addCardToSamsungWallet(
       {required String cardID,
@@ -34,5 +36,6 @@ abstract class SamsungWalletPlatform extends PlatformInterface {
   Future<void> initialized(
       {String? countryCode,
       required String parterCode,
-      required String impressionURL});
+      required String impressionURL,
+      required String serviceType});
 }
