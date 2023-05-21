@@ -3,18 +3,18 @@ import 'samsung_wallet_platform_interface.dart';
 class SamsungWallet {
   final String? countryCode;
   final String serviceType = 'WALLET';
-  final String parterCode;
+  final String partnerCode;
   final String impressionURL;
 
   SamsungWallet({
     this.countryCode,
     required this.impressionURL,
-    required this.parterCode,
+    required this.partnerCode,
   }) {
     initialize(
       countryCode: countryCode,
       impressionURL: impressionURL,
-      parterCode: parterCode,
+      partnerCode: partnerCode,
     );
   }
 
@@ -22,17 +22,17 @@ class SamsungWallet {
   ///
   /// optional paramter [countryCode] country code following (ISO_3166-2)
   ///
-  /// mandatory paratmer [parterCode].
+  /// mandatory paratmer [partnerCode].
   /// Please Check your samsung wallet portal site.
   ///
   /// [serviceType] is mandatory, fixed. Someday it can be change
 
   Future<bool?> checkSamsungWalletSupported({
     String? countryCode,
-    required String parterCode,
+    required String partnerCode,
   }) async =>
       await SamsungWalletPlatform.instance.checkSamsungWalletSupported(
-          parterCode: parterCode,
+          partnerCode: partnerCode,
           countryCode: countryCode,
           serviceType: serviceType);
 
@@ -57,11 +57,11 @@ class SamsungWallet {
 
   Future<void> initialize(
       {String? countryCode,
-      required String parterCode,
+      required String partnerCode,
       required String impressionURL}) async {
     await SamsungWalletPlatform.instance.initialized(
         serviceType: serviceType,
-        parterCode: parterCode,
+        partnerCode: partnerCode,
         impressionURL: impressionURL,
         countryCode: countryCode);
   }

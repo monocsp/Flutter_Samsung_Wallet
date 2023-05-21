@@ -17,11 +17,11 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
   @override
   Future<bool?> checkSamsungWalletSupported(
       {String? countryCode,
-      required String parterCode,
+      required String partnerCode,
       required String serviceType}) async {
     final result = await methodChannel.invokeMethod('checkWallet', {
       'countryCode': countryCode,
-      'partnerCode': parterCode,
+      'partnerCode': partnerCode,
       'serviceType': serviceType
     });
     log("$_TAG : Samsung Wallet supported? ${result ? "YES!" : "NO!"}");
@@ -43,12 +43,12 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
   @override
   Future<void> initialized(
       {String? countryCode,
-      required String parterCode,
+      required String partnerCode,
       required String serviceType,
       required String impressionURL}) async {
     Map result = (await methodChannel.invokeMapMethod('initialized', {
           'countryCode': countryCode,
-          'partnerCode': parterCode,
+          'partnerCode': partnerCode,
           'serviceType': serviceType,
           'impressionURL': impressionURL
         })) ??
