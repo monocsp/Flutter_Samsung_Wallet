@@ -8,7 +8,9 @@ import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
+
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -17,6 +19,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
 import android.app.Activity;
+import android.Manifest;
 
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -27,10 +30,12 @@ import androidx.annotation.Nullable;
 //For Samsung Wallet Import
 import android.os.Build;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +45,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.net.MalformedURLException;
 
 import android.net.Uri;
+
 //For Excutor
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Callable;
@@ -88,17 +94,27 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
 
+        if (!checkInternetPermission()) {
+            result.error(TAG, ERROR_TAG, " : Please Check Internet Permission in AndroidManifest.xml");
+            return;
+        }
 
-        if(call.method.equals("initialized")){
-                final String modelName = Build.MODEL;
-                final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
-                final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
-                final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
-                final String impressionURL = call.argument("impressionURL");
-                HashMap<String, Object> response = new HashMap<>();
+        if (!checkAccessNetworkStatePermission()) {
+            result.error(TAG, ERROR_TAG, " : Please Check AccessNetworkState Permission in AndroidManifest.xml");
+            return;
+        }
 
-                    
-            try{
+
+        if (call.method.equals("initialized")) {
+            final String modelName = Build.MODEL;
+            final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
+            final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
+            final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
+            final String impressionURL = call.argument("impressionURL");
+
+            HashMap<String, Object> response = new HashMap<>();
+
+            try {
                 if (serviceType == null || serviceType.isEmpty()) {
                     result.error(TAG, ERROR_TAG, " : serviceType is mandatory parameter!");
                     return;
@@ -110,17 +126,17 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
                 }
                 boolean isWalletSupported = checkWalletAsyncTask(
                         modelName, countryCode, serviceType, partnerCode);
-                        response.put("walletSupported", isWalletSupported);                
-                        
-            }catch(Exception e){
+                response.put("walletSupported", isWalletSupported);
+
+            } catch (Exception e) {
                 result.error(TAG, ERROR_TAG, e.getMessage());
                 return;
             }
 
-            try{
+            try {
                 boolean isConnectedImpressionUrl = openConnectionImpressionUrl(impressionURL);
                 response.put("connectedImpressionUrl", isConnectedImpressionUrl);
-            }catch(IOException e){
+            } catch (IOException e) {
                 result.error(TAG, ERROR_TAG, e.getMessage());
                 return;
             }
@@ -130,11 +146,11 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
 
         if (call.method.equals("checkWallet")) {
             final String modelName = Build.MODEL;
-                final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
-                final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
-                final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
+            final String countryCode = call.argument("countryCode"); // (optional) country code (ISO_3166-2)
+            final String serviceType = call.argument("serviceType"); // (mandatory, fixed) for Samsung Wallet
+            final String partnerCode = call.argument("partnerCode"); // (mandatory) same as partnerId (Partner ID)
             try {
-                
+
                 if (serviceType == null || serviceType.isEmpty()) {
                     result.error(TAG, ERROR_TAG, " : serviceType is mandatory parameter!");
                     return;
@@ -212,8 +228,6 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
 
         return false;
     }
-
-
 
 
     private boolean addCardToSamsungWallet(@NonNull String clickUrl, @NonNull String cardId, @NonNull String cData) {
@@ -381,4 +395,14 @@ public class SamsungWalletPlugin implements FlutterPlugin, MethodCallHandler, Ac
         }
         return sb.toString();
     }
+
+    private boolean checkAccessNetworkStatePermission() {
+        return ContextCompat.checkSelfPermission(this.activity.getApplicationContext(), Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean checkInternetPermission() {
+
+        return ContextCompat.checkSelfPermission(this.activity.getApplicationContext(), Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
+    }
+
 }

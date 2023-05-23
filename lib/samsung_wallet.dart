@@ -1,9 +1,26 @@
 import 'samsung_wallet_platform_interface.dart';
 
 class SamsungWallet {
+  /// (optional) [countryCode] country code (ISO_3166-2)
+  /// ex : "US" or "KR"
   final String? countryCode;
+
+  /// Mandatory and Fixed
   final String serviceType = 'WALLET';
+
+  /// mandatory paratmer [partnerCode] same as partnerId (Partner ID)
+  ///
+  /// You can find PartnerCode in Samsung Wallet Partners potal
+  /// partner.walletsvc.samsung.com
   final String partnerCode;
+
+  /// URL of logging a button impression event.
+  /// * the value granted from partner portal
+  ///
+  /// mandatory paratmer [impressionURL] Impression URL
+  ///
+  /// You can find Impression Url in Partners Mange Wallet Card
+  /// App Integration
   final String impressionURL;
 
   SamsungWallet({
@@ -38,13 +55,22 @@ class SamsungWallet {
 
   /// Add Card the provided cdata and cardid in Samsung Wallet
   ///
+
   /// mandatory paramter [cardId]
+  ///
+  /// Wallet card identifier
   /// Please Check CardId which you want to add card
   ///
   /// mandatory paratmer [clickURL].
-  /// Please Check CardId which you want to add card
+  ///
+  /// URL of logging a button click event.
+  /// * the value granted from partner portal
   ///
   /// mandatory paratmer [cData]
+  ///
+  /// Encrypted Card object (JSON).
+  /// * This field needs to be encrypted.
+  ///
   /// You can get cdata from CData Generator
   /// which is you can find samsung wallet official documentation
 
@@ -59,7 +85,7 @@ class SamsungWallet {
       {String? countryCode,
       required String partnerCode,
       required String impressionURL}) async {
-    await SamsungWalletPlatform.instance.initialized(
+    SamsungWalletPlatform.instance.initialized(
         serviceType: serviceType,
         partnerCode: partnerCode,
         impressionURL: impressionURL,

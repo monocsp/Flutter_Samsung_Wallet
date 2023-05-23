@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -33,7 +32,8 @@ class MethodChannelSamsungWallet extends SamsungWalletPlatform {
       {required String cardID,
       required String cData,
       required String clickURL}) async {
-    final result = await methodChannel.invokeMethod('addCardToSamsungWallet',
+    final result = await methodChannel.invokeMethod(
+            'addCardToSamsungWallet',
             {"cardId": cardID, "cData": cData, "clickURL": clickURL}) ??
         false;
     log("$_TAG : Open Samsung Wallet ${result ? "Success" : "Fail"}");

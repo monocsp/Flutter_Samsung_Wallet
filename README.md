@@ -2,4 +2,4 @@
 
 Samsung Wallet Sample for Flutter
 
-support flutter >= 3.0, dart >= 2.18.4,
+support flutter >= 3.0, dart >= 2.14.0, < 4.0.0
