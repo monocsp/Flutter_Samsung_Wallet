@@ -23,7 +23,17 @@ dependencies:
   flutter_samsung_wallet: 
 ```
 
-2. Set main
+2. add Permission in AndroidManifest.xml
+
+Add two line for android internet permission
+
+
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+If you want more information, check [this](https://developer.android.com/training/basics/network-ops/connecting?hl=ko)
+
+3. Set main
 
 Please add 'WidgetsFlutterBinding.ensureInitialized();' code into your main
 
@@ -34,7 +44,7 @@ void main() {
 }
 ```
 
-3. Initialization SamsungWallet
+4. Initialization SamsungWallet
 
 Initialization SamsungWallet Object
 
@@ -48,7 +58,7 @@ If you initialize the SamsungWallet object, it will automatically check SamsungW
 
 The results can be viewed in the debug console log.
 
-4. Add Card
+5. Add Card
 
 If Samsung wallet is supported, you can add card.
 
