@@ -1,7 +1,7 @@
 name: samsung_wallet
 description: Samsung Wallet Example Flutter plugin project.
 version: 1.0.0
-homepage:
+repository: https://github.com/monocsp/flutter_samsung_wallet
 
 environment:
   sdk: '>=2.14.0 <4.0.0'

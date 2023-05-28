@@ -29,8 +29,10 @@ dependencies:
 
 Add permission to your `AndroidManifest.xml` file.
 
+```html
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
 
 If you want more information, check [this](https://developer.android.com/training/basics/network-ops/connecting?hl=ko)
 
