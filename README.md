@@ -16,17 +16,18 @@ If you need the reference code, you can click [here](https://developer.samsung.c
 
 ## How to use
 
-1. add dependency to pubspec.yaml
+1. add dependency
+
+Add dependency to your `pubspec.yaml` file.
 
 ```yaml
 dependencies:
   flutter_samsung_wallet: 
 ```
 
-2. add Permission in AndroidManifest.xml
+2. Add Permission
 
-Add two line for android internet permission
-
+Add permission to your `AndroidManifest.xml` file.
 
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -35,7 +36,7 @@ If you want more information, check [this](https://developer.android.com/trainin
 
 3. Set main
 
-Please add 'WidgetsFlutterBinding.ensureInitialized();' code into your main
+Please add 'WidgetsFlutterBinding.ensureInitialized();' code to your main in `main.dart` file
 
 ```dart
 void main() {
@@ -70,5 +71,6 @@ samsungWalletPlugin.addCardToSamsungWallet(
 You can get cdata JWT Generator. Please check [here] (https://developer.samsung.com/wallet/samplecode.html) about JWT Generator
 
 
+## Issues
 
-
+Please file any issues, bugs or feature request as an issue on my [GitHub](https://github.com/monocsp/flutter_samsung_wallet/issues) page.
