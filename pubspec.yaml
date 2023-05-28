@@ -1,6 +1,6 @@
 name: samsung_wallet
-description: Samsung Wallet Example Flutter plugin project.
-version: 1.0.0
+description: Samsung Wallet Example Flutter plugin project. This plugin based Samsung Wallet Android java package file.
+version: 1.0.2
 repository: https://github.com/monocsp/flutter_samsung_wallet
 
 environment:

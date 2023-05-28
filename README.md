@@ -22,7 +22,7 @@ Add dependency to your `pubspec.yaml` file.
 
 ```yaml
 dependencies:
-  flutter_samsung_wallet: 
+  samsung_wallet: newest_version
 ```
 
 2. Add Permission
@@ -70,7 +70,7 @@ samsungWalletPlugin.addCardToSamsungWallet(
         cardID: cardId, cData: cdata, clickURL: clickUrl);
 ```
 
-You can get cdata JWT Generator. Please check [here] (https://developer.samsung.com/wallet/samplecode.html) about JWT Generator
+You can get cdata JWT Generator. Please check [here](https://developer.samsung.com/wallet/samplecode.html) about JWT Generator
 
 
 ## Issues
