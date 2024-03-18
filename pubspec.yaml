@@ -1,22 +1,23 @@
 name: samsung_wallet
 description: Samsung Wallet Example Flutter plugin project. This plugin based Samsung Wallet Android java package file.
-version: 1.0.2
+version: 1.1.2
 repository: https://github.com/monocsp/flutter_samsung_wallet
 
 environment:
-  sdk: '>=2.14.0 <4.0.0'
+  sdk: ">=2.17.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.1.4
+  flutter_svg: ^2.0.10+1
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
-
+  flutter_lints: ^3.0.1
 
 flutter:
   plugin:
@@ -25,4 +26,13 @@ flutter:
         package: com.monocsp.samsung_wallet
         pluginClass: SamsungWalletPlugin
 
-
+  assets:
+    - assets/
+    - assets/wallet/
+    - assets/wallet/de/
+    - assets/wallet/en/
+    - assets/wallet/es/
+    - assets/wallet/fr/
+    - assets/wallet/kr/
+    - assets/wallet/it/
+    - assets/wallet/none/
