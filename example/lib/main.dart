@@ -13,17 +13,31 @@ class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   /// mandatory
+  ///
+  /// URL for logging a button impression event.
+  /// Value granted from the Partners Portal.
+  ///
   /// Check your Wallet Cards in Manage Wallet Cards which you want add Wallet Card App Integration
   static const String impressionUrl = "[ Impression Url ]";
 
   /// optional
+  ///
+  /// Country code
   static const String countryCode = "[ CountryCode ]";
 
   /// mandatory
+  ///
+  /// Partner code obtained from Partners Portal
+  /// Value granted from the Partners portal.
+  ///
   /// Check your Wallet Cards in Samsung Wallet Partners
   static const String partnerCode = "[ Partner Code ]";
 
   /// mandatory
+  ///
+  /// Wallet card identifier obtained from Partners Portal
+  /// Value granted from the Partners Portal.
+  ///
   /// Check your Wallet Cards in Manage Wallet Cards which you want add Wallet Card App Integration
   static const String cardId = "[ Card Id ]";
 
@@ -32,6 +46,13 @@ class MyApp extends StatelessWidget {
   static const String cdata = "[ CData ]";
 
   /// mandatory
+  ///
+  /// Encrypted card object (JSON).
+  /// This field needs to be encrypted.
+  ///
+  /// Refer to [Security](https://developer.samsung.com/wallet/api/security.html)
+  /// for more details.
+  ///
   /// Check your Wallet Cards in Manage Wallet Cards which you want add Wallet Card App Integration
   static const String clickUrl = "[ Click Url ]";
 
@@ -62,25 +83,22 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Samsung Wallet Demo'),
         ),
-        body: Column(
-          children: [
-            const Flexible(
-              flex: 3,
-              fit: FlexFit.loose,
-              child: Center(
-                  child: Text(
-                'Hello Samsung Wallet!',
-                style: TextStyle(fontSize: 20),
-              )),
-            ),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: GestureDetector(
-                  onTap: addCard,
-                  child: Image.asset("assets/wallet_card.png")),
-            )
-          ],
+        body: Center(
+          child: Column(
+            children: [
+              const Text('Hello Samsung Wallet!'),
+              const SizedBox(
+                height: 50,
+              ),
+
+              //  AddToSamsungWalletButton(onTapAddCard: addCard),
+
+              const SizedBox(
+                height: 50,
+              ),
+              AddToSamsungWalletButton.testTool(),
+            ],
+          ),
         ),
       ),
     );
