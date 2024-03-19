@@ -90,9 +90,12 @@ class MyApp extends StatelessWidget {
               const SizedBox(
                 height: 50,
               ),
-
-              //  AddToSamsungWalletButton(onTapAddCard: addCard),
-
+              AddToSamsungWalletButton(
+                onTapAddCard: addCard,
+                buttonDesignType: ButtonDesignType.iconBasic,
+                buttonTextPositionType: ButtonTextPositionType.hor,
+                buttonThemeType: ButtonThemeType.pos,
+              ),
               const SizedBox(
                 height: 50,
               ),

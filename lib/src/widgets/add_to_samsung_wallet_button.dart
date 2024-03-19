@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:samsung_wallet/samsung_wallet.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 const String _packagePrefix = 'packages/samsung_wallet/';
@@ -10,15 +10,16 @@ class AddToSamsungWalletButton extends StatelessWidget {
   /// Constructor for AddToSamsungWalletButton.
   ///
   /// [onTapAddCard] called when the button is tapped.
-  /// [buttonStyle] determines the visual style of the button.
-  /// [buttonLocale] determines the language/locale of the button text.
-  /// [isSvg] determines whether the button image should be in SVG format. Defaults to true.
+  /// [buttonDesignType] Determines the button design.
+  /// [buttonTextPositionType] Determines the text position in button.
+  /// [buttonThemeType] Determines button theme.
+
   const AddToSamsungWalletButton({
     super.key,
     this.onTapAddCard,
-    this.buttonStyle,
-    this.buttonLocale,
-    this.isSvg = true, // Defaults to true, specifying SVG format.
+    this.buttonDesignType,
+    this.buttonTextPositionType,
+    this.buttonThemeType,
   });
 
   /// Constructor for AddToSamsungWalletButton with a test tool.
@@ -34,54 +35,66 @@ class AddToSamsungWalletButton extends StatelessWidget {
 
     return AddToSamsungWalletButton(
       onTapAddCard: launch,
-      isSvg: false,
     );
   }
 
   /// Default path for the button image.
-  final String _defaultButtonPath = "assets/wallet/default_wallet_design";
+  final String _defaultButtonPath = "assets/wallet/default_wallet_design.png";
 
   /// Called when the button is tapped.
   final VoidCallback? onTapAddCard;
 
-  /// Determines the visual style of the button.
-  final SamsungWalletButtonStyle? buttonStyle;
+  /// Determines the button design.
+  final ButtonDesignType? buttonDesignType;
 
-  /// Determines the language/locale of the button text.
-  final SamsungWalletButtonLocale? buttonLocale;
+  /// Determines the text position in button.
+  final ButtonTextPositionType? buttonTextPositionType;
 
-  /// Determines whether the button image should be in SVG format. Defaults to true.
-  final bool isSvg;
+  /// Determines button theme.
+  final ButtonThemeType? buttonThemeType;
+
+  // /// Determines whether the button image should be in SVG format. Defaults to true.
+  // final bool isSvg;
 
   @override
   Widget build(BuildContext context) {
+    if (buttonDesignType == null &&
+        buttonTextPositionType == null &&
+        buttonThemeType == null) {
+      return defaultButton();
+    }
+
     final walletPath = "$_packagePrefix${_getButtonPath()}";
     return GestureDetector(
       onTap: onTapAddCard,
-      child: _walletImageWidget(walletPath),
+      child: _walletImage(walletPath),
     );
   }
 
+  /// Default Setting about Button design
+  Widget defaultButton() => GestureDetector(
+        onTap: onTapAddCard,
+        child: Image.asset(_packagePrefix + _defaultButtonPath),
+      );
+
   /// Returns the path for the button image based on style and locale.
   String _getButtonPath() {
-    if (buttonStyle == null && buttonLocale == null) {
+    if (buttonDesignType == null &&
+        buttonTextPositionType == null &&
+        buttonThemeType == null) {
       return _defaultButtonPath;
     }
-    String locale = _localePath(buttonLocale);
-    String style = _stylePath(buttonStyle);
-    return "assets/$locale/$style";
+    String design = (buttonDesignType ?? ButtonDesignType.addTo).name;
+    String position =
+        (buttonTextPositionType ?? ButtonTextPositionType.hor).name;
+    String theme = (buttonThemeType ?? ButtonThemeType.pos).name;
+    return "assets/wallet/buttons/rgb/Wallet_button_${design}_${position}_${theme}_RGB";
   }
 
-  /// Returns the path for the button style.
-  String _stylePath(SamsungWalletButtonStyle? style) =>
-      (style ?? SamsungWalletButtonStyle.normal).toString();
-
-  /// Returns the path for the button locale.
-  String _localePath(SamsungWalletButtonLocale? locale) =>
-      (locale ?? SamsungWalletButtonLocale.none).toString();
-
   /// Returns the widget for the button image based on the selected format.
-  Widget _walletImageWidget(String path) => isSvg
-      ? SvgPicture.asset("$path.svg") // Loads SVG format.
-      : Image.asset("$path.png"); // Loads PNG format.
+  Widget _walletImage(String path) =>
+      // ? SvgPicture.asset(
+      //     "$path.svg",
+      //   ) // Loads SVG format.
+      Image.asset("$path.png"); // Loads PNG format.
 }
